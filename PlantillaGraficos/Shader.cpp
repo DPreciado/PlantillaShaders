@@ -64,7 +64,7 @@ Shader::Shader(const char* rutaVertexShader, const char* rutaFragmentShader) {
 	glLinkProgram(shaderID);
 
 	//7.- Verificar si hubo errores en la vinculacion
-
+	verificarVinculacion(shaderID);
 }
 
 void Shader::verificarCompilacion(GLuint id) {
@@ -90,4 +90,12 @@ void Shader::verificarCompilacion(GLuint id) {
 		}
 
 	}
+}
+
+void Shader::enlazar() {
+	glUserProgram(shaderID);
+}
+
+void Shader::desenlazar() {
+	glUserProgram(0);
 }
