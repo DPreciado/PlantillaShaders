@@ -17,7 +17,7 @@
 using namespace std;
 
 //Cada elemeto que queramos renderear necesita un vertex array y un buffer
-vector<vertice> triangulo;
+vector<Vertice> triangulo;
 GLuint vertexArrayTrianguloID;
 GLuint bufferTrianguloID;
 
@@ -28,17 +28,17 @@ GLuint posicionID;
 GLuint colorID;
 
 void inicializarTriangulo() {
-	vertice v1 = {
+	Vertice v1 = {
 		vec3(0.0f, 0.3f, 0.0f),
-		vec4(0.8f, 0.1f, 0.0f, 1.0f)
+		vec4(0.0f, 0.0f, 0.0f, 1.0f)
 	};
-	vertice v2 = {
+	Vertice v2 = {
 		vec3(-0.3f, -0.3f, 0.0f),
-		vec4(0.8f, 0.1f, 0.0f, 1.0f)
+		vec4(0.0f, 0.0f, 0.0f, 1.0f)
 	};
-	vertice v3 = {
+	Vertice v3 = {
 		vec3(0.3, -0.3, 0.0f),
-		vec4(0.8f, 0.1f, 0.0f, 1.0f)
+		vec4(0.0f, 0.0f, 0.0f, 1.0f)
 	};
 	triangulo.push_back(v1);
 	triangulo.push_back(v2);
@@ -46,7 +46,17 @@ void inicializarTriangulo() {
 }
 
 void dibujar() {
+	//Elegir shader
+	shader->enlazar();
+	//Elegir el vertex array
+	glBindVertexArray(vertexArrayTrianguloID);
+	//Dibujar
+	glDrawArrays(GL_TRIANGLES, 0, triangulo.size());
 
+	//Soltar vertex array
+	glBindVertexArray(0);
+	//Desenlazar shader
+	shader->desenlazar();
 }
 
 int main()
@@ -61,7 +71,7 @@ int main()
 	}
 	//Si se pudo inicial glfw
 	//inicializamos la ventana
-	window = glfwCreateWindow(800, 600, "Ventana", NULL, NULL);
+	window = glfwCreateWindow(600, 600, "Ventana", NULL, NULL);
 
 	if (!window)
 	{
@@ -91,14 +101,14 @@ int main()
 	shader = new Shader(rutaVertexShader, rutaFragmentShader);
 
 	//Mapeo de atributos
-	posicionID = glGetAttribLocation(shader->getID(), "posiccion");
+	posicionID = glGetAttribLocation(shader->getID(), "posicion");
 	colorID = glGetAttribLocation(shader->getID(), "color");
 
 	shader->desenlazar();
 
 	//Crear el vertex array del triangulo
 	glGenVertexArrays(1, &vertexArrayTrianguloID);
-	glBindVertexArrays(vertexArrayTrianguloID);
+	glBindVertexArray(vertexArrayTrianguloID);
 
 	//Vertex buffer
 	glGenBuffers(1, &bufferTrianguloID);
@@ -113,6 +123,12 @@ int main()
 
 	//Especificar a OpenGL como comunicarse
 	glVertexAttribPointer(posicionID, 3, GL_FLOAT, GL_FALSE, sizeof(Vertice), 0);
+	glVertexAttribPointer(colorID, 4, GL_FLOAT, GL_FALSE, sizeof(Vertice), (void*)sizeof(vec3));
+
+	//Soltar el vertex array y el buffer
+	glBindVertexArray(0);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+
 
 	//ciclo de dibujo (Draw loop)
 	while (!glfwWindowShouldClose(window)) {
@@ -120,7 +136,7 @@ int main()
 		glViewport(0, 0, 600, 600);
 		//Establecemos el color de borrado
 		//Valores RGBA
-		glClearColor(0.9, 0.2, 0.5, 1);
+		glClearColor(0.5, 0.2, 0.5, 1);
 		//Borrar!
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		
