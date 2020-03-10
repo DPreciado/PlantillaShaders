@@ -21,11 +21,41 @@ vector<Vertice> triangulo;
 GLuint vertexArrayTrianguloID;
 GLuint bufferTrianguloID;
 
+vector<Vertice> cuadrado;
+GLuint vertexArrayCuadradoID;
+GLuint bufferCuadradoID;
+
 //Instancia del shader
 Shader *shader;
 //Identificadores para mapeo de atributos de entradea del vertex shader
 GLuint posicionID;
 GLuint colorID;
+
+void inicializarCuadrado() {
+	Vertice v1 = {
+		vec3(-0.2f,0.2f,0.0f),
+		vec4(0.1f,0.8f,0.2f,1.0f)
+	};
+
+	Vertice v2 = {
+		vec3(0.2f,0.2f,0.0f),
+		vec4(0.1f,0.8f,0.2f,1.0f)
+	};
+
+	Vertice v3 = {
+		vec3(0.2f,-0.2f,0.0f),
+		vec4(0.1f,0.8f,0.2f,1.0f)
+	};
+
+	Vertice v4 = {
+		vec3(-0.2f,-0.2f,0.0f),
+		vec4(0.1f,0.8f,0.2f,1.0f)
+	};
+	cuadrado.push_back(v1);
+	cuadrado.push_back(v2);
+	cuadrado.push_back(v3);
+	cuadrado.push_back(v4);
+}
 
 void inicializarTriangulo() {
 	Vertice v1 = {
@@ -52,6 +82,10 @@ void dibujar() {
 	glBindVertexArray(vertexArrayTrianguloID);
 	//Dibujar
 	glDrawArrays(GL_TRIANGLES, 0, triangulo.size());
+
+	//Proceso dibujo de cuadrado
+	glBindVertexArray(vertexArrayCuadradoID);
+	glDrawArrays(GL_QUADS, 0, cuadrado.size());
 
 	//Soltar vertex array
 	glBindVertexArray(0);
@@ -95,6 +129,7 @@ int main()
 	cout << "Version OpenGL: " << versionGL;
 
 	inicializarTriangulo();
+	inicializarCuadrado();
 
 	const char* rutaVertexShader = "VertexShader.Shader";
 	const char* rutaFragmentShader = "FragmentShader.Shader";
@@ -122,6 +157,17 @@ int main()
 	glEnableVertexAttribArray(colorID);
 
 	//Especificar a OpenGL como comunicarse
+	glVertexAttribPointer(posicionID, 3, GL_FLOAT, GL_FALSE, sizeof(Vertice), 0);
+	glVertexAttribPointer(colorID, 4, GL_FLOAT, GL_FALSE, sizeof(Vertice), (void*)sizeof(vec3));
+
+	//Proceso de inicializar vertex array para el cuadrado
+	glGenVertexArrays(1, &vertexArrayCuadradoID);
+	glBindVertexArray(vertexArrayCuadradoID);
+	glGenBuffers(1, &bufferCuadradoID);
+	glBindBuffer(GL_ARRAY_BUFFER, bufferCuadradoID);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(Vertice) * cuadrado.size(), cuadrado.data(), GL_STATIC_DRAW);
+	glEnableVertexAttribArray(posicionID);
+	glDisableVertexAttribArray(colorID);
 	glVertexAttribPointer(posicionID, 3, GL_FLOAT, GL_FALSE, sizeof(Vertice), 0);
 	glVertexAttribPointer(colorID, 4, GL_FLOAT, GL_FALSE, sizeof(Vertice), (void*)sizeof(vec3));
 
