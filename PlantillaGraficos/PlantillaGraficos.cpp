@@ -167,7 +167,7 @@ int main()
 	glBindBuffer(GL_ARRAY_BUFFER, bufferCuadradoID);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(Vertice) * cuadrado.size(), cuadrado.data(), GL_STATIC_DRAW);
 	glEnableVertexAttribArray(posicionID);
-	glDisableVertexAttribArray(colorID);
+	glEnableVertexAttribArray(colorID);
 	glVertexAttribPointer(posicionID, 3, GL_FLOAT, GL_FALSE, sizeof(Vertice), 0);
 	glVertexAttribPointer(colorID, 4, GL_FLOAT, GL_FALSE, sizeof(Vertice), (void*)sizeof(vec3));
 
