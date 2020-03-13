@@ -8,14 +8,16 @@
 in vec3 posicion;
 in vec4 color;
 
+//Uniforms
+uniform mat4 transformaciones;
+
 //Atributos de salida (Van hacia el fragment shader)
 out vec4 fragmentColor;
 
 //Funcion main
 void main() {
 	//Posicion del vertice (vec4)
-	gl_Position.xyz = posicion;
-	gl_Position.w = 1.0;
+	gl_Position = transformaciones * posicion;
 
 	//Establecer valores de atributos de salida
 	fragmentColor = color;
